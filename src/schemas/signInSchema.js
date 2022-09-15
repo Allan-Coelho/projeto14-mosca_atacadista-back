@@ -4,10 +4,9 @@ import { joiPasswordExtendCore } from 'joi-password';
 const JoiPassword = Joi.extend(joiPasswordExtendCore);
 
 const signInSchema = Joi.object({
-
     email: Joi.alternatives().try(
-            Joi.
-                string()
+            Joi
+                .string()
                 .email({tlds: { allow: false }})
                 .required(),
         
