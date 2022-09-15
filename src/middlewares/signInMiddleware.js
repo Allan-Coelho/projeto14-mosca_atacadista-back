@@ -1,9 +1,9 @@
-import { signUpSchema } from '../schemas/userSchema.js';
+import { signInSchema } from '../schemas/signInSchema.js';
 import { STATUS_CODE } from '../enums/statusCode.js';
 
-function signUpValidation(request, response, next) {
+function signInValidation(request, response, next) {
     const user = response.locals.body;
-    const { value, error } = signUpSchema.validate(user);
+    const { value, error } = signInSchema.validate(user);
 
     if (error === undefined) {
         response.locals.body = value;
@@ -15,4 +15,4 @@ function signUpValidation(request, response, next) {
     response.status(STATUS_CODE.UNPROCESSABLE_ENTITY).send("Por favor, preencha o formulário corretamente.");
 }
 
-export { signUpValidation }
+export { signInValidation }
