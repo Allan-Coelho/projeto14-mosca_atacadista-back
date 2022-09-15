@@ -4,6 +4,7 @@ import database from '../database/database.js';
 import { ObjectId } from 'mongodb';
 import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
+import { func } from 'joi';
 
 async function signup(request, response) {
     try {
@@ -44,15 +45,17 @@ async function signup(request, response) {
     }
 }
 
-
 async function getUser(request, response) {
     try {
         const userId = response.locals.userId;
         const users = database.collection(COLLECTIONS.USERS);
         const user = await users.findOne({ _id: userId });
 
-
-
+        response.send({
+            profilePictureURL: user.profilePictureURL,
+            name: user.name,
+            email: user.email
+        });
     }
 
     catch (err) {
@@ -60,5 +63,6 @@ async function getUser(request, response) {
         console.log(err.message);
     }
 }
+
 
 export { signup, getUser }
