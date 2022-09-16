@@ -1,9 +1,10 @@
 import { stripHtml } from 'string-strip-html';
 
-const propertiesToSanitize = ['email', 'password', 'name', 'type', 'value', 'description', 'date', 'profilePictureURL'];
-const requestObjectsToSanitize = ['headers', 'body'];
+const requestObjectsToSanitize = ['headers', 'body', 'query', 'params'];
+const propertiesToSanitize = ['limit', 'email', 'password', 'name', 'type', 'value', 'description', 'date', 'profilePictureURL', 'category'];
 
 function htmlSanitizer(request, response, next) {
+    console.log('pao')
     for (let j = 0, len0 = requestObjectsToSanitize.length; j < len0; j++) {
         const objectKey = requestObjectsToSanitize[j];
         const object = request?.[objectKey];
