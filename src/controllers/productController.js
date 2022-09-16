@@ -4,29 +4,38 @@ import database from '../database/database.js';
 import { CATEGORIES } from '../enums/products.js';
 import { DEFAULT_VALUES } from '../enums/defaultValues.js';
 
-async function getCategory(request, response) {
-    const category = response.locals.params.category;
-    const validCategory = CATEGORIES.includes(category);
-
-    if (!validCategory) {
-        response.status(STATUS_CODE.NOT_FOUND).send('Essa categoria não existe')
-    }
-
+async function getProduct(request, response) {
+    const filterProduct = response.locals.params.filterProduct;
+    const validCategory = CATEGORIES.includes(filterProduct);
+    
     try {
+        if (!validCategory) {
+            const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ productId: filterProduct});
+
+            if (!product) {
+                response.status(STATUS_CODE.NOT_FOUND).send([])
+                return;
+            } else {
+                response.send(product).status(STATUS_CODE.OK);
+                return;
+            }
+        }
+ 
         const limit = response.locals.query === undefined ? DEFAULT_VALUES.GET_PRODUCTS_LIMIT : response.locals.query.limit;
         const products = database.collection(COLLECTIONS.PRODUCTS);
-        const productsByCategory = await products.find({ category: category }, { limit: Number(limit) }).toArray();
-
+        const productsByCategory = await products.find({ category: filterProduct }, { limit: Number(limit) }).toArray();
+        
         if (productsByCategory.length === 0) {
-            response.status(STATUS_CODE.NOT_FOUND).send('Não há produtos dessa categoria')
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
         }
 
         response.send(productsByCategory);
-    }
-    catch (err) {
+        
+    } catch (err) {
         response.sendStatus(STATUS_CODE.SERVER_ERROR)
         console.log(err.message);
     }
 }
 
-export { getCategory };
+export { getProduct };

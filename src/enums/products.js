@@ -3,6 +3,12 @@ const CATEGORIES = Object.freeze([
     'Audio-e-video',
     'Moda',
     'Mercearia',
+    'Livros',
+    'Instrumentos Musicais',
+    'Promoção',
+    'Saúde',
+    'Decoração',
+    'Brinquedos',
 ]);
 
 export { CATEGORIES }

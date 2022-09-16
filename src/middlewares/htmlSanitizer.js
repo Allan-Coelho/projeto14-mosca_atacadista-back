@@ -1,10 +1,9 @@
 import { stripHtml } from 'string-strip-html';
 
 const requestObjectsToSanitize = ['headers', 'body', 'query', 'params'];
-const propertiesToSanitize = ['limit', 'email', 'password', 'name', 'type', 'value', 'description', 'date', 'profilePictureURL', 'category'];
+const propertiesToSanitize = ['limit', 'email', 'password', 'name', 'type', 'value', 'description', 'date', 'profilePictureURL', 'filterProduct'];
 
 function htmlSanitizer(request, response, next) {
-    console.log('pao')
     for (let j = 0, len0 = requestObjectsToSanitize.length; j < len0; j++) {
         const objectKey = requestObjectsToSanitize[j];
         const object = request?.[objectKey];
@@ -25,7 +24,8 @@ function htmlSanitizer(request, response, next) {
             response.locals[objectKey][propertyName] = stripHtml(propertyValue).result;
         }
     }
-    next();
+
+    next(); 
 }
 
 export { htmlSanitizer };

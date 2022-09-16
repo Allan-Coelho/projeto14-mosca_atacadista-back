@@ -15,4 +15,4 @@ server
     .use(userRouter)
     .use(signInRouter)
     .use(productRouter)
-    .listen(process.env.PORT);
+    .listen(process.env.PORT, () => {console.log('server on')});
