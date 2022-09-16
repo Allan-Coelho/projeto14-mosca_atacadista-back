@@ -22,7 +22,7 @@ async function postSignIn(req, res) {
         };
         
         const validPassword = bcrypt.compareSync(password, user.password);
-        console.log(user)
+
         if (validPassword){
             const token = uuid();
 
