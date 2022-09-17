@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from "dotenv";
 import userRouter from './src/routes/userRouter.js';
 import signInRouter from './src/routes/signInRouter.js';
-import productRouter from './src/routes/productRouter.js';
+import productRouter from './src/routes/productsRouter.js';
+import categoryRouter from './src/routes/categoryRouter.js';
 import cors from 'cors';
 
 const server = express();
@@ -15,4 +16,5 @@ server
     .use(userRouter)
     .use(signInRouter)
     .use(productRouter)
+    .use(categoryRouter)
     .listen(process.env.PORT, () => {console.log('server on')});

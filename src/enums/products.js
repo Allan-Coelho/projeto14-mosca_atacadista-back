@@ -4,10 +4,10 @@ const CATEGORIES = Object.freeze([
     'Moda',
     'Mercearia',
     'Livros',
-    'Instrumentos Musicais',
-    'Promoção',
-    'Saúde',
-    'Decoração',
+    'Instrumentos-Musicais',
+    'Promocao',
+    'Saude',
+    'Decoracao',
     'Brinquedos',
 ]);
 
