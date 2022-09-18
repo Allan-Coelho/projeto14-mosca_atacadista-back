@@ -1,11 +1,11 @@
 import express from 'express';
 import { htmlSanitizer } from '../middlewares/htmlSanitizer.js';
-import { getProduct, getProductById } from '../controllers/productController.js';
 import { sessionVerifier } from '../middlewares/authorizationMiddleware.js';
+import { getCartProduct, postCartProduct } from './cartController.js';
 
 const router = express.Router();
 
-router.get('/products', htmlSanitizer, sessionVerifier, getProduct);
-router.get('/product', htmlSanitizer, sessionVerifier, getProductById);
+router.get('/cart', htmlSanitizer, sessionVerifier, getCartProduct);
+router.post('/cart', htmlSanitizer, sessionVerifier, postCartProduct);
 
 export default router;

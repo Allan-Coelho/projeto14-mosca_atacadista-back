@@ -5,11 +5,11 @@ import { DEFAULT_VALUES } from '../enums/defaultValues.js';
 import mongoose from 'mongoose';
 
 
-async function getProductById (request, response) {
-    const productId = response.locals.query.productId;
+async function postCartProduct (request, response) {
+    const productId = response.locals;
     console.log(productId)
     try {
-        const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        const product = await database.collection(COLLECTIONS.CARTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
         if (!product) {
             response.status(STATUS_CODE.NOT_FOUND).send([])
             return;
@@ -23,12 +23,11 @@ async function getProductById (request, response) {
     }
 }
 
-async function getProduct(request, response) {
-    const limit = response.locals.query === undefined ? DEFAULT_VALUES.GET_PRODUCTS_LIMIT : response.locals.query.limit;
-    const productsdb = database.collection(COLLECTIONS.PRODUCTS);
+async function getCartProduct (request, response) {
+    const productsdb = database.collection(COLLECTIONS.CARTS);
 
     try {
-        const products = await productsdb.find({}, { limit: Number(limit) }).toArray();
+        const products = await productsdb.find({}).toArray();
         
         if (products.length === 0) {
             response.status(STATUS_CODE.NOT_FOUND).send([])
@@ -44,4 +43,4 @@ async function getProduct(request, response) {
     
 }
 
-export { getProduct, getProductById};
+export { getCartProduct, postCartProduct};
