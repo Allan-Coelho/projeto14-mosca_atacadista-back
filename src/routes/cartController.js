@@ -36,14 +36,14 @@ async function postCartProduct (request, response) {
         } 
         
         const user = await database.collection(COLLECTIONS.USERS).findOne({_id: userId });
-
-        delete product._id;
-        product['userId'] = userId.toString();
-
+        
         if (!user) {
             response.status(STATUS_CODE.NOT_FOUND).send([])
             return;
         }
+
+        delete product._id;
+        product['userId'] = userId.toString();
 
         await database.collection(COLLECTIONS.CARTS).insertOne(product);
         response.sendStatus(STATUS_CODE.OK);
@@ -54,4 +54,31 @@ async function postCartProduct (request, response) {
     }
 }
 
-export { getCartProduct, postCartProduct};
+async function deleteCartProduct (request, response) {
+    const productId = response.locals.body.productId;
+    const userId = response.locals.userId;
+
+    try {
+        const product = await database.collection(COLLECTIONS.CARTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        
+        if (!product) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        } 
+
+        if (product.userId !== userId.toString()) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        }
+
+        await database.collection(COLLECTIONS.CARTS).deleteOne({ _id: mongoose.Types.ObjectId(productId)});
+        response.sendStatus(STATUS_CODE.OK);
+        
+    } catch (err) {
+        response.sendStatus(STATUS_CODE.SERVER_ERROR)
+        console.log(err.message);
+    }
+}
+
+
+export { getCartProduct, postCartProduct, deleteCartProduct};
