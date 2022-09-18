@@ -4,25 +4,6 @@ import database from '../database/database.js';
 import { DEFAULT_VALUES } from '../enums/defaultValues.js';
 import mongoose from 'mongoose';
 
-
-async function postCartProduct (request, response) {
-    const productId = response.locals;
-    console.log(productId)
-    try {
-        const product = await database.collection(COLLECTIONS.CARTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
-        if (!product) {
-            response.status(STATUS_CODE.NOT_FOUND).send([])
-            return;
-        } 
-        console.log(product)
-        response.send(product);
-        
-    } catch (err) {
-        response.sendStatus(STATUS_CODE.SERVER_ERROR)
-        console.log(err.message);
-    }
-}
-
 async function getCartProduct (request, response) {
     const productsdb = database.collection(COLLECTIONS.CARTS);
 
@@ -40,7 +21,37 @@ async function getCartProduct (request, response) {
         response.sendStatus(STATUS_CODE.SERVER_ERROR)
         console.log(err.message);
     }
-    
+}
+
+async function postCartProduct (request, response) {
+    const productId = response.locals.body.productId;
+    const userId = response.locals.userId;
+
+    try {
+        const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        
+        if (!product) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        } 
+        
+        const user = await database.collection(COLLECTIONS.USERS).findOne({_id: userId });
+
+        delete product._id;
+        product['userId'] = userId.toString();
+
+        if (!user) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        }
+
+        await database.collection(COLLECTIONS.CARTS).insertOne(product);
+        response.sendStatus(STATUS_CODE.OK);
+        
+    } catch (err) {
+        response.sendStatus(STATUS_CODE.SERVER_ERROR)
+        console.log(err.message);
+    }
 }
 
 export { getCartProduct, postCartProduct};
