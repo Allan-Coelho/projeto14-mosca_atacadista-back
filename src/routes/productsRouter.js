@@ -6,6 +6,6 @@ import { sessionVerifier } from '../middlewares/authorizationMiddleware.js';
 const router = express.Router();
 
 router.get('/products', htmlSanitizer, sessionVerifier, getProduct);
-router.get('/products/:productId', htmlSanitizer, sessionVerifier, getProductById);
+router.get('/product', htmlSanitizer, sessionVerifier, getProductById);
 
 export default router;
