@@ -24,12 +24,12 @@ async function getCartProduct (request, response) {
 }
 
 async function postCartProduct (request, response) {
-    const productId = response.locals.body.productId;
+    const productId = request.headers.productid;
     const userId = response.locals.userId;
 
     try {
         const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
-        
+
         if (!product) {
             response.status(STATUS_CODE.NOT_FOUND).send([])
             return;
@@ -55,7 +55,9 @@ async function postCartProduct (request, response) {
 }
 
 async function deleteCartProduct (request, response) {
-    const productId = response.locals.body.productId;
+    const productId = request.headers.productid;
+    console.log(productId)
+    console.log("aqui")
     const userId = response.locals.userId;
 
     try {
@@ -79,6 +81,5 @@ async function deleteCartProduct (request, response) {
         console.log(err.message);
     }
 }
-
 
 export { getCartProduct, postCartProduct, deleteCartProduct};
