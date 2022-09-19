@@ -6,15 +6,23 @@ import mongoose from 'mongoose';
 
 
 async function getProductById (request, response) {
-    const productId = response.locals.query.productId;
-    console.log(productId)
+    const productId = request.headers.productid;
+    
     try {
-        const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        let product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        
         if (!product) {
-            response.status(STATUS_CODE.NOT_FOUND).send([])
-            return;
+            product = await database.collection(COLLECTIONS.CARTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        
+            if (!product) {
+                response.status(STATUS_CODE.NOT_FOUND).send([])
+                return;
+            }
+
+            response.send(product);
+            return
         } 
-        console.log(product)
+        
         response.send(product);
         
     } catch (err) {
