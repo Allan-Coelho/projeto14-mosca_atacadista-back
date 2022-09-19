@@ -24,12 +24,12 @@ async function getCartProduct (request, response) {
 }
 
 async function postCartProduct (request, response) {
-    const productId = response.locals.body.productId;
+    const productId = request.headers.productid;
     const userId = response.locals.userId;
 
     try {
         const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
-        
+
         if (!product) {
             response.status(STATUS_CODE.NOT_FOUND).send([])
             return;
@@ -55,7 +55,7 @@ async function postCartProduct (request, response) {
 }
 
 async function deleteCartProduct (request, response) {
-    const productId = response.locals.body.productId;
+    const productId = request.headers.productid;
     const userId = response.locals.userId;
 
     try {
@@ -73,6 +73,39 @@ async function deleteCartProduct (request, response) {
 
         await database.collection(COLLECTIONS.CARTS).deleteOne({ _id: mongoose.Types.ObjectId(productId)});
         response.sendStatus(STATUS_CODE.OK);
+        
+    } catch (err) {
+        response.sendStatus(STATUS_CODE.SERVER_ERROR)
+        console.log(err.message);
+    }
+}
+
+async function getCartProductConfirm (request, response) {
+    console.log(response.locals)
+    const productId = response.locals.query.productId;
+    const userId = response.locals.userId;
+
+    try {
+        const productCart = await database.collection(COLLECTIONS.CARTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
+        
+        if (!productCart) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        } 
+
+        if (productCart.userId !== userId.toString()) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        }
+
+        const product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productCart.productId)});
+
+        if (!product) {
+            response.status(STATUS_CODE.NOT_FOUND).send([])
+            return;
+        }
+
+        response.send(product);
         
     } catch (err) {
         response.sendStatus(STATUS_CODE.SERVER_ERROR)

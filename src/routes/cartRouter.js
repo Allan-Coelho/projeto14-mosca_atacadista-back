@@ -1,7 +1,7 @@
 import express from 'express';
 import { htmlSanitizer } from '../middlewares/htmlSanitizer.js';
 import { sessionVerifier } from '../middlewares/authorizationMiddleware.js';
-import { getCartProduct, postCartProduct, deleteCartProduct } from './cartController.js';
+import { getCartProduct, postCartProduct, deleteCartProduct } from '../controllers/cartController.js';
 
 const router = express.Router();
 
