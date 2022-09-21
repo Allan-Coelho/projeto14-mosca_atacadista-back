@@ -3,14 +3,18 @@ import { MongoClient } from "mongodb";
 
 dotenv.config();
 
-const mongoClient = new MongoClient(process.env.DATABASE_URI);
+const mongoClient = new MongoClient(process.env.DATABASE_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
 
 try {
-    await mongoClient.connect();
+  await mongoClient.connect();
 } catch (err) {
-    console.error(err.message);
+  console.error(err.message);
 }
 
-const database = mongoClient.db('mosca_atacadista');
+const database = mongoClient.db("mosca_atacadista");
 
 export default database;
