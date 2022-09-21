@@ -18,6 +18,7 @@ const propertiesToSanitize = [
 ];
 
 function htmlSanitizer(request, response, next) {
+  console.log("Sanitize begin")
   for (let j = 0, len0 = requestObjectsToSanitize.length; j < len0; j++) {
     const objectKey = requestObjectsToSanitize[j];
     const object = request?.[objectKey];
