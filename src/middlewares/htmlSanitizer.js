@@ -15,6 +15,7 @@ const propertiesToSanitize = [
   "productId",
   "price",
   "pictures",
+  "promotion"
 ];
 
 function htmlSanitizer(request, response, next) {
