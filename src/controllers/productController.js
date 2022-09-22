@@ -4,31 +4,35 @@ import database from "../database/database.js";
 import { DEFAULT_VALUES } from "../enums/defaultValues.js";
 import mongoose from "mongoose";
 import { newProductSchema } from "../schemas/productSchema.js";
+import { CATEGORIES } from "../enums/products.js";
 
-async function getProductById (request, response) {
-    const productId = request.headers.productid;
-    
-    try {
-        let product = await database.collection(COLLECTIONS.PRODUCTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
-        
-        if (!product) {
-            product = await database.collection(COLLECTIONS.CARTS).findOne({ _id: mongoose.Types.ObjectId(productId)});
-        
-            if (!product) {
-                response.status(STATUS_CODE.NOT_FOUND).send([])
-                return;
-            }
+async function getProductById(request, response) {
+  const productId = request.headers.productid;
 
-            response.send(product);
-            return
-        } 
-        
-        response.send(product);
-        
-    } catch (err) {
-        response.sendStatus(STATUS_CODE.SERVER_ERROR)
-        console.log(err.message);
+  try {
+    let product = await database
+      .collection(COLLECTIONS.PRODUCTS)
+      .findOne({ _id: mongoose.Types.ObjectId(productId) });
+
+    if (!product) {
+      product = await database
+        .collection(COLLECTIONS.CARTS)
+        .findOne({ _id: mongoose.Types.ObjectId(productId) });
+
+      if (!product) {
+        response.status(STATUS_CODE.NOT_FOUND).send([]);
+        return;
+      }
+
+      response.send(product);
+      return;
     }
+
+    response.send(product);
+  } catch (err) {
+    response.sendStatus(STATUS_CODE.SERVER_ERROR);
+    console.log(err.message);
+  }
 }
 
 async function getProduct(request, response) {
@@ -62,8 +66,9 @@ async function postProduct(request, response) {
     const { pictures } = body;
     body.pictures = pictures.split(",");
     const { value, error } = newProductSchema.validate(body);
+    const categoryIsValid = CATEGORIES.includes(value.category);
 
-    if (error !== undefined) {
+    if (error !== undefined || !categoryIsValid) {
       response
         .status(STATUS_CODE.UNPROCESSABLE_ENTITY)
         .send("Invalid body request.");
