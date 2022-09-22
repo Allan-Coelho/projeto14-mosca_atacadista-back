@@ -9,8 +9,8 @@ import { sessionVerifier } from "../middlewares/authorizationMiddleware.js";
 
 const router = express.Router();
 
-router.get("/products", htmlSanitizer, sessionVerifier, getProduct);
-router.get("/product", htmlSanitizer, sessionVerifier, getProductById);
+router.get("/products", htmlSanitizer, getProduct);
+router.get("/product", htmlSanitizer, getProductById);
 router.post("/product", htmlSanitizer, sessionVerifier, postProduct);
 
 export default router;
